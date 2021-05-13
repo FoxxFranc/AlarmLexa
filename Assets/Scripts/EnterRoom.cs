@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class EnterRoom : MonoBehaviour
 {
     [SerializeField] private UnityEvent _entered, _leaved;
+
     public event UnityAction Entered
     {
         add => _entered?.AddListener(value);
