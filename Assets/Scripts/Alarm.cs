@@ -10,7 +10,8 @@ public class Alarm : MonoBehaviour
     [SerializeField] private float _durationVolume;
 
     private AudioSource _audio;
-    private float _currentlVolume, _targetVolume;
+    private float _currentlVolume, _targetVolume, _runningTime;
+    private bool isWorking = false;
 
     private void Awake()
     {
@@ -22,7 +23,7 @@ public class Alarm : MonoBehaviour
         _audio.Play();
         _targetVolume = 1;
         _currentlVolume = 0;
-        StopAllCoroutines();
+        isWorking = true;
         StartCoroutine(Ring(_durationVolume));
     }
 
@@ -30,25 +31,27 @@ public class Alarm : MonoBehaviour
     {
         _targetVolume = 0;
         _currentlVolume = 1;
-        StopAllCoroutines();
+        isWorking = false;
         StartCoroutine(QuietDown(_durationVolume));
     }
 
     private IEnumerator Ring(float duration)
     {
-        while (true)
+        while (isWorking)
         {
-                _audio.volume += Mathf.MoveTowards(_currentlVolume, _targetVolume, 1/Mathf.Pow(duration,2));
-            yield return new WaitForSecondsRealtime(1/duration);
+            _runningTime += Time.deltaTime / _durationVolume;
+                _audio.volume += Mathf.MoveTowards(_currentlVolume, _targetVolume, _runningTime/_durationVolume);
+            yield return new WaitForSecondsRealtime(_runningTime);
         }
     }
 
     private IEnumerator QuietDown(float duration)
     {
-        while (true)
+        while (isWorking == false)
         {
-            _audio.volume -= Mathf.MoveTowards(_currentlVolume, _targetVolume, 1 - 1 / Mathf.Pow(duration, 2));
-            yield return new WaitForSecondsRealtime(1 / duration);
+            _runningTime += Time.deltaTime;
+            _audio.volume -= Mathf.MoveTowards(_currentlVolume, _targetVolume, _currentlVolume - _runningTime/_durationVolume);
+            yield return new WaitForSecondsRealtime(_runningTime);
         }
     }
 }
