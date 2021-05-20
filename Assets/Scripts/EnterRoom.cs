@@ -24,8 +24,7 @@ public class EnterRoom : MonoBehaviour
         if (collision.TryGetComponent<Player>(out Player player))
         {
             _entered?.Invoke();
-        }
-         
+        }        
     }
 
     private void OnTriggerExit2D(Collider2D collision)
