@@ -23,7 +23,6 @@ public class Alarm : MonoBehaviour
         _runningTime = 0;
         _audio.Play();
         _targetVolume = 1;
-        _currentlVolume = 0;
         isWorking = true;
         StartCoroutine(Ring(_speedSoundChange));
     }
@@ -32,7 +31,6 @@ public class Alarm : MonoBehaviour
     {
         _runningTime = 0;
         _targetVolume = 0;
-        _currentlVolume = _audio.volume;
         isWorking = false;
         StartCoroutine(QuietDown(_speedSoundChange));
     }
@@ -62,6 +60,6 @@ public class Alarm : MonoBehaviour
     private void ChangeVolume()
     {
         _runningTime += (Time.deltaTime);
-        _audio.volume = Mathf.MoveTowards(_currentlVolume, _targetVolume, _runningTime * _speedSoundChange);
+        _audio.volume = Mathf.MoveTowards(_audio.volume, _targetVolume, _runningTime * _speedSoundChange);
     }
 }
